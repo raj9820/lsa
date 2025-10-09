@@ -1,0 +1,25 @@
+Step 1: Update Packages and Install DHCP Server
+First, need to update the list of available software and then install the ISC DHCP Server. The apt-get
+update command ensures you get the latest package information, and apt install handles the
+installation. sudo apt-get update
+sudo apt install isc-dhcp-server
+Step 2: Configure the Network Interface
+Next, edit the configuration file to tell the DHCP server which network interface it should listen on for
+requests. In my case, this is the ens33 interface. sudo nano /etc/default/isc-dhcp-server
+Inside the file, change INTERFACESv4="" to INTERFACESv4="ens33" Step 3: Configure the Main DHCP Settings
+This step involves editing the main configuration file to set up your network's specific details, such as
+the IP address range, router, and DNS servers. sudo nano /etc/dhcp/dhcpd.conf  find and uncomment the following line:
+authoritative;
+Add or edit a subnet block that matches your network. Here is a common example you can adapt. subnet 192.168.234.0 netmask 255.255.255.0 {
+range 192.168.234.100 192.168.234.200;
+option domain-name-servers 8.8.8.8, 8.8.4.4;
+option routers 192.168.234.2;
+option broadcast-address 192.168.234.255;
+default-lease-time 600;
+max-lease-time 7200;
+}
+Step 4: Restart and Verify the Service
+After saving the configuration changes, must restart the DHCP service for the changes to take effect. Then, check its status to make sure it's running correctly. sudo systemctl restart isc-dhcp-server
+sudo systemctl status isc-dhcp-server
+Step 5: Check Firewall Status
+check firewall status to ensure it's not blocking the DHCP service. sudo ufw status
