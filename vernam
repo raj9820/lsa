@@ -1,0 +1,29 @@
+def stringEncryption(text, key):
+    cipherText = ""
+    for i in range(len(key)):
+        value = (ord(text[i]) - ord('A') + ord(key[i]) - ord('A')) % 26
+        cipherText += chr(value + ord('A'))
+    return cipherText
+
+def stringDecryption(cipherText, key):
+    plainText = ""
+    for i in range(len(key)):
+        value = (ord(cipherText[i]) - ord('A') - (ord(key[i]) - ord('A')) + 26) % 26
+        plainText += chr(value + ord('A'))
+    return plainText
+
+# Input
+plainText = "SHIVANGII"
+key = "MONEYBANK"
+
+# Convert to uppercase for encryption
+plainText = plainText.upper()
+key = key.upper()
+
+# Encryption
+encryptedText = stringEncryption(plainText, key)
+print("Cipher Text  -", encryptedText)
+
+# Decryption
+decryptedText = stringDecryption(encryptedText, key)
+print("Decrypted Text -", decryptedText)
