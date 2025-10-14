@@ -1,0 +1,26 @@
+def columnar_encrypt(text, key):
+    key = [int(k) for k in key]
+    key_len = len(key)
+    
+    while len(text) % key_len != 0:
+        text += ' '
+        
+    cipher_blocks = []
+    print("Encryption Steps:\n")
+    
+    for i in range(0, len(text), key_len):
+        block = text[i:i+key_len]
+        reordered = ''.join([block[k - 1] for k in key]) 
+        print(f"Plain block: {block} -> Cipher block: {reordered}")
+        cipher_blocks.append(reordered)
+        
+    return ''.join(cipher_blocks)
+
+plaintext = "COME HOME TOMORROW"
+Transposition_key = "4213"
+
+cipher_text = columnar_encrypt(plaintext, Transposition_key)
+
+print("\nPlain Text    : ", plaintext)
+print("Key (Used)    : ", Transposition_key)
+print("Cipher Text   : ", cipher_text)
