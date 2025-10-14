@@ -1,0 +1,67 @@
+def is_prime(p):
+    if p <= 1:
+        return False
+    if p == 2:
+        return True
+    for i in range(2, int(p ** 0.5) + 1):
+        if p % i == 0:
+            return False
+    return True
+
+def is_primitive_root(g, p):
+    required_set = set(range(1, p))
+    actual_set = set(pow(g, power, p) for power in range(1, p))
+    return required_set == actual_set
+
+# Input Prime Number P
+while True:
+    try:
+        P = int(input("Enter a prime number (P): "))
+        if not is_prime(P):
+            print("Number is not prime, please try again.")
+            continue
+        break
+    except ValueError:
+        print("Invalid input, please enter an integer.")
+
+# Input Primitive Root G
+while True:
+    try:
+        G = int(input(f"Enter a primitive root modulo {P} (G): "))
+        if not is_primitive_root(G, P):
+            print(f"{G} is not a primitive root modulo {P}, please try again.")
+            continue
+        break
+    except ValueError:
+        print("Invalid input, please enter an integer.")
+
+# Input Private Keys x1 and x2
+while True:
+    try:
+        x1 = int(input("Enter the private key for User 1 (x1): "))
+        x2 = int(input("Enter the private key for User 2 (x2): "))
+        if x1 >= P or x2 >= P:
+            print(f"Private keys should be less than {P}, please try again.")
+            continue
+        break
+    except ValueError:
+        print("Invalid input, please enter integers.")
+
+# Calculate public keys
+y1 = pow(G, x1, P)
+y2 = pow(G, x2, P)
+
+# Exchange and compute shared secret keys
+k1 = pow(y2, x1, P)
+k2 = pow(y1, x2, P)
+
+# Output 
+print(f"\nPublic key for User 1: {y1}")
+print(f"Public key for User 2: {y2}")
+print(f"Secret key for User 1: {k1}")
+print(f"Secret key for User 2: {k2}")
+
+if k1 == k2:
+    print(" Keys have been exchanged successfully!")
+else:
+    print(" Key exchange failed.")
