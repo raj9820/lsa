@@ -1,0 +1,43 @@
+# IDFS
+def dls(graph, node, target, depth, path):
+    path.append(node)
+    if node == target:
+        return True
+    if depth == 0:
+        path.pop()
+        return False
+    for neighbor in graph.get(node, []):
+        if dls(graph, neighbor, target, depth - 1, path):
+            return True
+    path.pop()
+    return False
+
+def iddfs(graph, start, target, max_depth):
+    for depth in range(max_depth + 1):
+        path = []
+        print(f"\n Searching at depth {depth}")
+        if dls(graph, start, target, depth, path):
+            print(f" Found target '{target}' at depth {depth}")
+            print(" Path:", " -> ".join(path))
+            return
+    print("\n Target not found")
+
+# Tree as seen in your image
+graph = {
+    'A': ['B', 'C', 'D'],
+    'B': ['E', 'F'],
+    'C': ['G'],
+    'D': ['H', 'I'],
+    'E': ['J', 'K'],
+    'F': [],
+    'G': ['L'],
+    'H': ['M'],
+    'I': [],
+    'J': [],
+    'K': [],
+    'L': [],
+    'M': []
+}
+
+# Example: Search for 'M'
+iddfs(graph, start='A', target='M', max_depth=4)
