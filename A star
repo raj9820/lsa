@@ -1,0 +1,85 @@
+#Question 1: Implement the A Search algorithm for solving a pathfinding problem.*
+import heapq
+def heuristic(a, b):
+    return abs(a[0] - b[0]) + abs(a[1] - b[1])
+def get_neighbors(pos, grid):
+    directions = [(0,1), (1,0), (-1,0), (0,-1)]
+    neighbors = []
+    x, y = pos
+    for dx, dy in directions:
+        nx, ny = x + dx, y + dy
+        if 0 <= nx < len(grid) and 0 <= ny < len(grid[0]) and grid[nx][ny] == 0:
+            neighbors.append((nx, ny))
+    return neighbors
+def a_star(grid, start, goal):
+    rows, cols = len(grid), len(grid[0])
+    open_set = []
+    heapq.heappush(open_set, (0 + heuristic(start, goal), 0, start, []))
+    visited = set()
+
+    while open_set:
+        f, g, current, path = heapq.heappop(open_set)
+
+        if current in visited:
+            continue
+        visited.add(current)
+        path = path + [current]
+
+        if current == goal:
+            return path, g
+
+        for neighbor in get_neighbors(current, grid):
+            if neighbor not in visited:
+                new_g = g + 1
+                heapq.heappush(open_set, (new_g + heuristic(neighbor, goal), new_g, neighbor, path))
+
+    return None, float('inf')
+# Question 2: Implement the Recursive Best-First Search (RBFS) algorithm for the same problem.
+def rbfs(grid, start, goal):
+    def recursive_search(node, g, bound, path):
+        f = max(g + heuristic(node, goal), path[-1][1] if path else 0)
+        if node == goal:
+            return path + [(node, f)], f
+
+        successors = []
+        for neighbor in get_neighbors(node, grid):
+            if neighbor not in [n for n, _ in path]:
+                new_g = g + 1
+                new_f = max(new_g + heuristic(neighbor, goal), f)
+                successors.append((neighbor, new_f))
+
+        if not successors:
+            return None, float('inf')
+
+        successors.sort(key=lambda x: x[1])
+        while successors:
+            best, best_f = successors[0]
+            if best_f > bound:
+                return None, best_f
+            alternative = successors[1][1] if len(successors) > 1 else float('inf')
+            result, new_f = recursive_search(best, g + 1, min(bound, alternative), path + [(node, f)])
+            successors[0] = (best, new_f)
+            successors.sort(key=lambda x: x[1])
+            if result is not None:
+                return result, new_f
+
+        return None, float('inf')
+
+    result, _ = recursive_search(start, 0, float('inf'), [])
+    return [node for node, _ in result], len(result) - 1 if result else float('inf')
+# Question 3: Compare the performance and effectiveness of both algorithms.
+# Test Grid
+grid = [
+    [0, 0, 0, 0],
+    [1, 1, 0, 1],
+    [0, 0, 0, 0],
+    [0, 1, 1, 0]
+]
+start = (0, 0)
+goal = (3, 3)
+path_astar, cost_astar = a_star(grid, start, goal)
+print("A* Path:", path_astar)
+print("A* Cost:", cost_astar)
+path_rbfs, cost_rbfs = rbfs(grid, start, goal)
+print("RBFS Path:", path_rbfs)
+print("RBFS Cost:", cost_rbfs)
