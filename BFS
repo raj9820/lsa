@@ -1,0 +1,32 @@
+#BFS
+from collections import deque
+graph = {
+    'A': ['B', 'C', 'D'],
+    'B': ['E', 'F'],
+    'C': ['G'],
+    'D': ['H', 'I'],
+    'E': ['J', 'K'],
+    'F': [],
+    'G': ['L'],
+    'H': ['M'],
+    'I': [],
+    'J': [],
+    'K': [],
+    'L': [],
+    'M': []
+}
+
+def bfs(graph, start):
+    visited = set()           # Track visited nodes
+    queue = deque([start])    # Initialize queue with start node
+
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            print(node, end=" ")
+            visited.add(node)
+            queue.extend(graph[node])  # Add unvisited children to queue
+
+# Driver code
+print("Following is the Breadth-First Search:")
+bfs(graph, 'A')
